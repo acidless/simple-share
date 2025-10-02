@@ -1,0 +1,199 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Noto Sans", sans-serif;
+}
+
+html {
+    --text-color: #0F0833;
+    --text-secondary-color: #707070;
+    --gray: #eeeeee;
+    --border-color: #8f8f8f;
+    --main-color: #3d3de3;
+    --main-color--hover: #2626a4;
+    --main-color--disabled: #8b8bee;
+}
+
+h1, h2 {
+    color: var(--text-color);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+p, label {
+    color: var(--text-secondary-color);
+    font-size: 1.1rem;
+}
+
+label {
+    font-size: 0.875rem;
+}
+
+input {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+}
+
+button {
+    background: var(--main-color);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background: var(--main-color--hover);
+}
+
+button:disabled {
+    background: var(--main-color--disabled);
+    cursor: not-allowed;
+}
+
+.container {
+    max-width: 1200px;
+    padding: 0 1rem;
+    margin: 0 auto;
+}
+
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.hero-section__title {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.hero-section__file-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.draggable-zone {
+    position: relative;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='8' ry='8' stroke='%23707070FF' stroke-width='7' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    aspect-ratio: 2 / 1;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.draggable-zone.dragover {
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='8' ry='8' stroke='%230F0833FF' stroke-width='7' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+.draggable-zone__icon {
+    margin-bottom: 1rem;
+    width: 5rem;
+    height: 5rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.draggable-zone.dragover .draggable-zone__icon {
+    transform: scale(1.1) translateY(-0.5rem);
+}
+
+.draggable-zone__title {
+    max-width: 100%;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.draggable-zone input {
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top:0;
+    right: 0;
+    bottom: 0;
+}
+
+.draggable-zone h2 {
+    font-size: 1.1rem;
+}
+
+.draggable-zone p {
+    font-size: 0.75rem;
+}
+
+
+.draggable-zone__progress-wrapper {
+    width: 100%;
+    background: var(--gray);
+    border: 1px solid var(--border-color);
+    height: 0.75rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+}
+
+.draggable-zone__progress {
+    height: 100%;
+    width: 0;
+    border-radius: 1rem;
+    background: var(--main-color);
+}
+
+.draggable-zone__uploading {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.hero-section__file-form.uploading .draggable-zone__uploading,
+.hero-section__file-form.error .draggable-zone__uploading {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-section__file-form.uploaded .draggable-zone__uploading {
+    display: none;
+}
+
+.draggable-zone__status {
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.uploaded-file {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.uploaded-file.active {
+    opacity: 1;
+    transform: translateY(0);
+}

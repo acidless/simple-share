@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Share</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<main>
+    <section class="container hero-section">
+        <div class="hero-section__title">
+            <h1>Simple Share</h1>
+            <p>Загрузите файл и получите ссылку на скачивание</p>
+        </div>
+        <form class="hero-section__file-form" action="#">
+            <div class="draggable-zone">
+                <img class="draggable-zone__icon" src="/file.svg" alt="">
+                <h2 class="draggable-zone__title">Выберите файл или перетащите</h2>
+                <p>(Максимальный размер файла 25 МБ)</p>
+                <input type="file" name="file" />
+            </div>
+            <button>
+                Загрузить
+            </button>
+            <div class="draggable-zone__uploading">
+                <div class="draggable-zone__progress-wrapper">
+                    <div class="draggable-zone__progress"></div>
+                </div>
+                <p class="draggable-zone__status"></p>
+            </div>
+        </form>
+        <div class="uploaded-file">
+            <label for="file-link">Ваша ссылка на файл</label>
+            <input readonly id="file-link" type="text">
+        </div>
+    </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

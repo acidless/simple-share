@@ -1,27 +1,39 @@
 import Controller from "./Controller.js";
 import {Express} from "express";
-import {Multer} from "multer";
+import multer, {Multer} from "multer";
 import FileModel from "../models/FileModel.js";
 
 export default class FileController extends Controller {
     public constructor(app: Express, upload: Multer) {
         super(app);
 
-        app.post('/api/files', upload.single('file'), (req, res) => {
-            if (!req.file) {
-                return res.status(400).json({ success: false, error: 'No file provided' });
-            }
+        app.post('/api/files', (req, res) => {
+            upload.single("file")(req, res, (err) => {
+                if (err instanceof multer.MulterError) {
+                    if (err.code === "LIMIT_FILE_SIZE") {
+                        return res.status(400).json({ success: false, error: "Файл слишком большой" });
+                    }
 
-            const fileModel = new FileModel();
-            const entry = fileModel.create({
-                originalName: req.file.originalname,
-                size: req.file.size,
-                mimeType: req.file.mimetype,
-                path: req.file.path
+                    return res.status(400).json({ success: false, error: err.message });
+                } else if (err) {
+                    return res.status(500).json({ success: false, error: "Ошибка загрузки файла" });
+                }
+
+                if (!req.file) {
+                    return res.status(400).json({ success: false, error: "Файл не предоставлен" });
+                }
+
+                const fileModel = new FileModel();
+                const entry = fileModel.create({
+                    originalName: req.file.originalname,
+                    size: req.file.size,
+                    mimeType: req.file.mimetype,
+                    path: req.file.path,
+                });
+
+                const link = `${process.env.BASE_URL}/d/${entry.id}/${entry.token}`;
+                res.json({ success: true, id: entry.id, link, meta: entry });
             });
-
-            const link = `${process.env.BASE_URL}/d/${entry.id}/${entry.token}`;
-            res.json({ success: true, id: entry.id, link, meta: entry });
         });
 
         app.get('/d/:id/:token', (req, res) => {
