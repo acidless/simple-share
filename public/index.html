@@ -20,7 +20,7 @@
             <div class="draggable-zone">
                 <img class="draggable-zone__icon" src="/file.svg" alt="">
                 <h2 class="draggable-zone__title">Выберите файл или перетащите</h2>
-                <p>(Максимальный размер файла 25 МБ)</p>
+                <p>(Максимальный размер файла 100 МБ)</p>
                 <input type="file" name="file" />
             </div>
             <button>
@@ -35,9 +35,16 @@
         </form>
         <div class="uploaded-file">
             <label for="file-link">Ваша ссылка на файл</label>
-            <input readonly id="file-link" type="text">
+            <div class="uploaded-file__link-container">
+                <input readonly id="file-link" type="text">
+                <button class="uploaded-file__copy-button" aria-label="Copy file link">
+                    <img src="/copy.svg" alt="">
+                </button>
+            </div>
         </div>
     </section>
+    <div class="popover">
+    </div>
 </main>
 <script src="/app.js"></script>
 </body>

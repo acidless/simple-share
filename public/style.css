@@ -6,6 +6,8 @@
 }
 
 html {
+    overflow: hidden;
+
     --text-color: #0F0833;
     --text-secondary-color: #707070;
     --gray: #eeeeee;
@@ -75,7 +77,7 @@ button:disabled {
     justify-content: center;
     padding: 2rem 1rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .hero-section__title {
@@ -196,4 +198,47 @@ button:disabled {
 .uploaded-file.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+.uploaded-file__link-container {
+    display: flex;
+    position: relative;
+}
+
+.uploaded-file__link-container input {
+    width: 100%;
+    padding-right: 5rem;
+}
+
+.uploaded-file__link-container button {
+    position: absolute;
+    right: 0;
+    width: 1rem;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.uploaded-file__link-container button img {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.popover {
+    position: absolute;
+    background: var(--gray);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.popover.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }

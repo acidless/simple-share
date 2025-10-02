@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileInput = dropZone.querySelector("input");
     const uploadForm = document.querySelector(".hero-section__file-form");
     const status = document.querySelector(".draggable-zone__status");
+
     const uploadedFile = document.querySelector(".uploaded-file");
+    const copyLinkBtn = document.querySelector(".uploaded-file__copy-button");
     const fileLinkInput = document.getElementById("file-link");
 
     dropZone.addEventListener("dragover", (e) => {
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
 
         if (!fileInput.files.length) {
-            alert("Выберите файл!");
+            showPopover("Выберите файл");
             return;
         }
 
@@ -66,11 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         xhr.onerror = onLoadingError;
-        function onLoadingError() {
-            onFileProcessed("error");
-            document.querySelector(".draggable-zone__progress").style.width = 0;
-            status.innerText = "Ошибка при загрузке.";
-        }
+
 
         xhr.send(formData);
         uploadForm.classList.add("uploading");
@@ -79,12 +77,35 @@ document.addEventListener("DOMContentLoaded", function() {
         uploadedFile.classList.remove("active");
         fileLinkInput.value = "";
 
-        function onFileProcessed(status) {
-            uploadForm.querySelector("button").disabled = false;
-            uploadForm.classList.remove("uploading");
-            uploadForm.classList.add(status);
-        }
-
-
+        copyLinkBtn.addEventListener("click", async function () {
+            try {
+                await navigator.clipboard.writeText(fileLinkInput.value);
+                showPopover("Ссылка скопирована!");
+            } catch (err) {
+                showPopover("Ошибка копирования: " + err);
+            }
+        });
     });
+
+    function onLoadingError() {
+        onFileProcessed("error");
+        document.querySelector(".draggable-zone__progress").style.width = 0;
+        status.innerText = "Ошибка при загрузке.";
+    }
+
+    function onFileProcessed(status) {
+        uploadForm.querySelector("button").disabled = false;
+        uploadForm.classList.remove("uploading");
+        uploadForm.classList.add(status);
+    }
+
+    function showPopover(text) {
+        const popover = document.querySelector(".popover");
+
+        popover.innerText = text;
+        popover.classList.add("active");
+        setTimeout(() => {
+            popover.classList.remove("active");
+        }, 2500);
+    }
 });

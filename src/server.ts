@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
         cb(null, safe);
     }
 });
-const upload = multer({storage, limits: {fileSize: 25 * 1024 * 1024}});
+const upload = multer({storage, limits: {fileSize: 100 * 1024 * 1024}});
 
 const fileController = new FileController(app, upload);
 
