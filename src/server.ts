@@ -1,4 +1,36 @@
-import FileModel from "./models/FileModel.js";
+import express from 'express';
+import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import dotenv from 'dotenv';
+import FileController from "./controllers/FileController.js";
 
-const model = new FileModel();
-model.create({originalName:"example.txt", size: 1024, mimeType: "text/plain", path: "./example.txt"});
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+process.env.RETENTION_DAYS = process.env.RETENTION_DAYS || "30";
+process.env.BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(process.cwd(), 'public')));
+
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => {
+        const safe = Date.now() + '-' + file.originalname.replace(/\s+/g, '_');
+        cb(null, safe);
+    }
+});
+const upload = multer({storage});
+
+const fileController = new FileController(app, upload);
+
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
