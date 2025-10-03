@@ -1,7 +1,7 @@
 import Controller from "./Controller.js";
 import {Express} from "express";
 import multer, {Multer} from "multer";
-import FileModel from "../models/FileModel.js";
+import {FileModel} from "../models/FileModel.js";
 
 export default class FileController extends Controller {
     public constructor(app: Express, upload: Multer) {

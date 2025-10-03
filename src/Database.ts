@@ -1,21 +1,34 @@
-import {Schema} from "./Schema.js";
+import {BaseSchema} from "./Schema.js";
 import { JSONFileSync } from 'lowdb/node'
 import {LowSync} from "lowdb";
+import fs from "fs";
 
-class Database {
-    private db: LowSync<Schema>;
-    private static instance_: Database;
+interface SchemaConstructor<T extends BaseSchema> {
+    new (...args: any[]): T;
+    filename: string;
+}
 
-    private constructor() {
-        this.db = new LowSync(new JSONFileSync('file.json'), {files: []})
-    }
+class Database<S extends BaseSchema> {
+    private db: LowSync<S>;
+    private static instances_ = new Map<string, Database<any>>();
 
-    public static instance(): Database {
-        if(!this.instance_) {
-            this.instance_ = new Database();
+    private constructor(ctor: SchemaConstructor<S>) {
+        const dir = 'datasources';
+
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
         }
 
-        return this.instance_;
+        this.db = new LowSync(new JSONFileSync(`${dir}/${ctor.filename}.json`), new ctor());
+    }
+
+    public static instance<T extends BaseSchema>(ctor: SchemaConstructor<T>): Database<T> {
+        const filename = ctor.filename;
+        if(!this.instances_.has(filename)) {
+            this.instances_.set(filename, new Database<T>(ctor));
+        }
+
+        return this.instances_.get(filename) as Database<T>;
     }
 
     public read() {
