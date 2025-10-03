@@ -5,6 +5,8 @@ import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
 import FileController from "./controllers/FileController.js";
+import AuthController from "./controllers/AuthController.js";
+import AuthMiddleware from "./middlewares/AuthMiddleware.js";
 
 dotenv.config();
 
@@ -29,7 +31,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage, limits: {fileSize: 100 * 1024 * 1024}});
 
-const fileController = new FileController(app, upload);
+const authController = new AuthController(app);
+
+const authMiddleware = new AuthMiddleware();
+const fileController = new FileController(app, upload, authMiddleware);
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);

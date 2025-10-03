@@ -1,22 +1,29 @@
 import Controller from "./Controller.js";
 import {Express} from "express";
 import {jwtSign} from "../jwt.js";
+import UserModel from "../models/UserModel.js";
+import bcrypt from "bcrypt";
 
 export default class AuthController extends Controller {
     public constructor(app: Express) {
         super(app);
 
-        app.post('/api/login', (req, res) => {
-            const { username, password } = req.body;
-            const ADMIN = process.env.ADMIN_USER || 'admin';
-            const PASS = process.env.ADMIN_PASS || 'admin';
+        app.post('/api/users', async (req, res) => {
+            const { email, password } = req.body;
 
-            if (username === ADMIN && password === PASS) {
-                const token = jwtSign({ username });
-                return res.json({ token });
+            const userModel = new UserModel();
+            let user = userModel.findByEmail(email);
+            if (!user) {
+                user = await userModel.create(email, password);
             }
 
-            res.status(401).json({ error: 'Invalid credentials' });
+            const valid = await bcrypt.compare(password, user.passwordHash);
+            if (!valid) {
+                return res.status(400).json({ success: false, error: "Неверные данные для входа" });
+            }
+
+            const token = jwtSign({userId: user.id});
+            res.json({ token });
         });
     }
 }

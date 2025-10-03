@@ -1,13 +1,14 @@
 import Controller from "./Controller.js";
 import {Express} from "express";
 import multer, {Multer} from "multer";
-import {FileModel} from "../models/FileModel.js";
+import FileModel from "../models/FileModel.js";
+import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 
 export default class FileController extends Controller {
-    public constructor(app: Express, upload: Multer) {
+    public constructor(app: Express, upload: Multer, authMiddleware: AuthMiddleware) {
         super(app);
 
-        app.post('/api/files', (req, res) => {
+        app.post('/api/files', authMiddleware.middleware, (req, res) => {
             upload.single("file")(req, res, (err) => {
                 if (err instanceof multer.MulterError) {
                     if (err.code === "LIMIT_FILE_SIZE") {
@@ -42,18 +43,18 @@ export default class FileController extends Controller {
             const fileModel = new FileModel();
             const entry = fileModel.findById(id);
             if (!entry) {
-                return res.status(404).json({ success: false, error: 'File not found' });
+                return res.status(404).json({ success: false, error: 'Файл не найден' });
             }
 
             if (entry.token !== token) {
-                return res.status(403).send({ success: false, error: 'Forbidden' });
+                return res.status(403).send({ success: false, error: 'Доступ запрещен' });
             }
 
             fileModel.incrementDownloads(id);
 
             res.download(entry.path, entry.originalName, (err) => {
                 if (err) {
-                    console.error('Download error', err);
+                    console.error('Ошибка загрузки', err);
                 }
             });
         });

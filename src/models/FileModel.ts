@@ -11,7 +11,7 @@ export type CreateFileParams = {
     path: string;
 }
 
-export class FileModel extends Model<FileSchema> {
+export default class FileModel extends Model<FileSchema> {
     public constructor() {
         super(Database.instance(FileSchema));
     }
