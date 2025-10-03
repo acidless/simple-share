@@ -4,6 +4,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
+import cookieParser from "cookie-parser";
 import FileController from "./controllers/FileController.js";
 import AuthController from "./controllers/AuthController.js";
 import AuthMiddleware from "./middlewares/AuthMiddleware.js";
@@ -16,6 +17,7 @@ process.env.RETENTION_DAYS = process.env.RETENTION_DAYS || "30";
 process.env.BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'public')));
 
@@ -31,9 +33,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage, limits: {fileSize: 100 * 1024 * 1024}});
 
-const authController = new AuthController(app);
-
 const authMiddleware = new AuthMiddleware();
+
+
+const authController = new AuthController(app, authMiddleware);
 const fileController = new FileController(app, upload, authMiddleware);
 
 app.listen(PORT, () => {

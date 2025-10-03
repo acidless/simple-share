@@ -3,12 +3,13 @@ import {Express} from "express";
 import {jwtSign} from "../jwt.js";
 import UserModel from "../models/UserModel.js";
 import bcrypt from "bcrypt";
+import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 
 export default class AuthController extends Controller {
-    public constructor(app: Express) {
+    public constructor(app: Express, authMiddleware: AuthMiddleware) {
         super(app);
 
-        app.post('/api/users', async (req, res) => {
+        app.post('/api/session', async (req, res) => {
             const { email, password } = req.body;
 
             const userModel = new UserModel();
@@ -23,7 +24,24 @@ export default class AuthController extends Controller {
             }
 
             const token = jwtSign({userId: user.id});
-            res.json({ token });
+
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            }).json({success: true});
+        });
+
+        app.delete('/api/session', authMiddleware.middleware, async (req, res) => {
+            return res.clearCookie("token").json({success: true});
+        });
+
+        app.get('/api/session', authMiddleware.middleware, async (req, res) => {
+            if((req as any).userId) {
+                return res.json({success: true});
+            }
+
+            return res.status(401).json({success: false, error: "Вы должны быть авторизованы для этого"});
         });
     }
 }

@@ -10,6 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
+<header>
+    <div class="header container">
+        <button class="secondary-btn modal-btn" data-modal="login-modal">Войти</button>
+    </div>
+</header>
 <main>
     <section class="container hero-section">
         <div class="hero-section__title">
@@ -33,7 +38,7 @@
                 <p class="draggable-zone__status"></p>
             </div>
         </form>
-        <div class="uploaded-file">
+        <div class="uploaded-file field-container">
             <label for="file-link">Ваша ссылка на файл</label>
             <div class="uploaded-file__link-container">
                 <input readonly id="file-link" type="text">
@@ -46,6 +51,23 @@
     <div class="popover">
     </div>
 </main>
+<div class="modal" id="login-modal">
+    <div class="modal__inner">
+        <h2>Вход</h2>
+        <form id="login-form" action="#">
+            <div class="field-container">
+                <label for="login-email">Email</label>
+                <input id="login-email" name="email" type="email" required autocomplete="email">
+            </div>
+            <div class="field-container">
+                <label for="login-password">Пароль</label>
+                <input id="login-password" name="password" type="password" required autocomplete="current-password">
+            </div>
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+</div>
 <script src="/app.js"></script>
+<script src="/auth.js"></script>
 </body>
 </html>

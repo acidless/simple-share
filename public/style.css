@@ -10,6 +10,7 @@ html {
 
     --text-color: #0F0833;
     --text-secondary-color: #707070;
+    --text-secondary-color--hover: #595959;
     --gray: #eeeeee;
     --border-color: #8f8f8f;
     --main-color: #3d3de3;
@@ -64,10 +65,27 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.secondary-btn {
+    background: var(--text-secondary-color);
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+}
+
+.secondary-btn:hover {
+    background: var(--text-secondary-color--hover);
+}
+
 .container {
     max-width: 1200px;
     padding: 0 1rem;
     margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem 1rem 2rem 1rem;
 }
 
 .hero-section {
@@ -75,7 +93,6 @@ button:disabled {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
     width: 100%;
     max-width: 500px;
 }
@@ -186,10 +203,6 @@ button:disabled {
 }
 
 .uploaded-file {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
     opacity: 0;
     transform: translateY(100%);
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -241,4 +254,60 @@ button:disabled {
 .popover.active {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal__inner {
+    background: #ffffff;
+    padding: 1rem;
+    min-width: 300px;
+    text-align: center;
+    border-radius: 0.5rem;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal.active .modal__inner {
+    transform: translateY(0);
+}
+
+.modal__inner h2 {
+    margin-bottom: 1rem;
+}
+
+.field-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 1rem;
+}
+
+.field-container label {
+    text-align: left;
+    margin-bottom: 0.25rem;
+}
+
+.modal__inner button[type="submit"] {
+    width: 100%;
+    padding: 0.5em 1.5rem;
 }

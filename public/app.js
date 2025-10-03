@@ -1,4 +1,14 @@
-document.addEventListener("DOMContentLoaded", function() {
+function showPopover(text) {
+    const popover = document.querySelector(".popover");
+
+    popover.innerText = text;
+    popover.classList.add("active");
+    setTimeout(() => {
+        popover.classList.remove("active");
+    }, 2500);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
     const dropZone = document.querySelector(".draggable-zone");
     const fileInput = dropZone.querySelector("input");
     const uploadForm = document.querySelector(".hero-section__file-form");
@@ -33,6 +43,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     uploadForm.addEventListener("submit", function (e) {
         e.preventDefault();
+
+        if (!isAuthenticated) {
+            openModal("login-modal");
+            return;
+        }
 
         if (!fileInput.files.length) {
             showPopover("Выберите файл");
@@ -98,14 +113,27 @@ document.addEventListener("DOMContentLoaded", function() {
         uploadForm.classList.remove("uploading");
         uploadForm.classList.add(status);
     }
-
-    function showPopover(text) {
-        const popover = document.querySelector(".popover");
-
-        popover.innerText = text;
-        popover.classList.add("active");
-        setTimeout(() => {
-            popover.classList.remove("active");
-        }, 2500);
-    }
 });
+
+async function onSuccessfulLogout() {
+    const loginBtn = document.querySelector('[data-modal="login-modal"]');
+
+    try {
+        const response = await fetch("/api/session", {
+            method: "DELETE"
+        });
+
+        if(response.status === 200) {
+            loginBtn.removeEventListener("click", logout, {capture: true});
+            loginBtn.textContent = "Войти";
+        }
+    }
+    catch (e) {}
+}
+
+function onSuccessfulLogin() {
+    const loginBtn = document.querySelector('[data-modal="login-modal"]');
+    loginBtn.textContent = "Выйти";
+    loginBtn.addEventListener("click", logout, {capture: true});
+}
+

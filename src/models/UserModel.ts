@@ -22,4 +22,8 @@ export default class UserModel extends Model<UserSchema> {
     findByEmail(email: string): UserType | undefined {
         return this.db.data().users.find(u => u.email === email);
     }
+
+    findById(id: string): UserType | undefined {
+        return this.db.data().users.find(u => u.id === id);
+    }
 }
