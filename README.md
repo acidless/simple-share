@@ -21,7 +21,7 @@
 
 1. Клонируйте репозиторий
 ```bash
-git clone https://github.com/yourname/simple-share.git
+git clone https://github.com/acidless/simple-share.git
 cd simple-share
 ```
 2. Установите зависимости
