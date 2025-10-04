@@ -22,6 +22,7 @@ export type UserType = {
     id: string;
     email: string;
     passwordHash: string;
+    isAdmin: boolean;
 };
 
 export class UserSchema extends BaseSchema {

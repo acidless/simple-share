@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 status.innerText = "Файл успешно загружен!";
 
                 let data = JSON.parse(xhr.responseText);
+                addFileToStats(data.meta);
                 fileLinkInput.value = data.link;
             } else {
                 onLoadingError();
@@ -114,6 +115,60 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadForm.classList.add(status);
     }
 });
+
+function onAdminLogin() {
+    document.querySelectorAll(".admin-hidden").forEach((el) => {
+        el.classList.remove("admin-hidden");
+    });
+    loadStats();
+}
+
+function onAdminLogout() {
+    const statsSection = document.querySelector(".stats-section");
+    statsSection.classList.add("admin-hidden");
+
+    const tbody = document.getElementById("stats-body");
+    tbody.innerHTML = "";
+}
+
+function addFileToStats(file) {
+    const tbody = document.getElementById("stats-body");
+    const tr = document.createElement("tr");
+
+    let sizeStr = "";
+    let size = (file.size / 1024).toFixed(1);
+    if(size >= 1024) {
+        sizeStr = (size / 1024).toFixed(1) + " MB";
+    } else {
+        sizeStr = size + " KB";
+    }
+
+    tr.innerHTML = `
+                <td>${file.originalName}</td>
+                <td>${sizeStr}</td>
+                <td>${file.mimeType}</td>
+                <td>${new Date(file.createdAt).toLocaleDateString()}</td>
+                <td>${file.downloadCount}</td>
+                <td>${file.lastDownloadedAt ? new Date(file.lastDownloadedAt).toLocaleDateString() : "-"}</td>
+            `;
+
+    tbody.appendChild(tr);
+}
+
+async function loadStats() {
+    try {
+        const res = await fetch("/api/files");
+        const data = await res.json();
+
+        const tbody = document.getElementById("stats-body");
+        tbody.innerHTML = "";
+        data.forEach(addFileToStats);
+    } catch (err) {
+        const message = "Ошибка загрузки статистики по файлам";
+        console.error(message, ": ", err);
+        showPopover(message);
+    }
+}
 
 async function onSuccessfulLogout() {
     const loginBtn = document.querySelector('[data-modal="login-modal"]');

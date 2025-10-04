@@ -3,6 +3,9 @@ import {UserSchema, UserType} from "../Schema.js";
 import Model from "./Model.js";
 import bcrypt from "bcrypt";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com";
+console.log(ADMIN_EMAIL);
+
 export default class UserModel extends Model<UserSchema> {
     public constructor() {
         super(Database.instance(UserSchema));
@@ -12,7 +15,7 @@ export default class UserModel extends Model<UserSchema> {
         const id = Date.now().toString();
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const user: UserType = { id, email, passwordHash };
+        const user: UserType = { id, email, passwordHash, isAdmin: email === ADMIN_EMAIL };
         this.db.data().users.push(user);
         this.db.write();
 

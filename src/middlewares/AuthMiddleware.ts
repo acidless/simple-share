@@ -11,8 +11,6 @@ class AuthMiddleware {
 
         try {
             const decoded = jwtVerify(token) as { userId: string };
-            (req as any).userId = decoded.userId;
-
             const userModel = new UserModel();
             const user = userModel.findById(decoded.userId);
 
@@ -20,6 +18,7 @@ class AuthMiddleware {
                 throw new Error("Пользователь не найден");
             }
 
+            (req as any).user = user;
             next();
         } catch (err) {
             return res.status(401).json({ error: "Предоставлен неверный токен" });

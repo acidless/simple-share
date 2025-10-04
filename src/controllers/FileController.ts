@@ -62,7 +62,7 @@ export default class FileController extends Controller {
         app.get('/api/files', (req, res) => {
             const fileModel = new FileModel();
 
-            const files = fileModel.listFiles();
+            const files = fileModel.top100Files();
             res.json(files);
         });
 

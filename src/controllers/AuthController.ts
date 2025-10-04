@@ -29,7 +29,7 @@ export default class AuthController extends Controller {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict"
-            }).json({success: true});
+            }).json({success: true, isAdmin: user.isAdmin});
         });
 
         app.delete('/api/session', authMiddleware.middleware, async (req, res) => {
@@ -37,8 +37,8 @@ export default class AuthController extends Controller {
         });
 
         app.get('/api/session', authMiddleware.middleware, async (req, res) => {
-            if((req as any).userId) {
-                return res.json({success: true});
+            if((req as any).user) {
+                return res.json({success: true, isAdmin: (req as any).user.isAdmin});
             }
 
             return res.status(401).json({success: false, error: "Вы должны быть авторизованы для этого"});

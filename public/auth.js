@@ -1,4 +1,6 @@
 let isAuthenticated_ = null;
+let isAdmin_ = false;
+
 Object.defineProperty(this, 'isAuthenticated', {
     get: function () {
         return isAuthenticated_;
@@ -10,6 +12,21 @@ Object.defineProperty(this, 'isAuthenticated', {
             onSuccessfulLogin();
         } else {
             onSuccessfulLogout();
+        }
+    }
+});
+
+Object.defineProperty(this, 'isAdmin', {
+    get: function () {
+        return isAdmin_;
+    },
+    set: function (v) {
+        isAdmin_ = v;
+
+        if(v) {
+            onAdminLogin();
+        } else {
+            onAdminLogout();
         }
     }
 });
@@ -28,6 +45,7 @@ function logout(e) {
     }
 
     isAuthenticated = false;
+    isAdmin = false;
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
@@ -35,6 +53,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const response = await fetch("/api/session");
         if(response.status === 200) {
             isAuthenticated = true;
+
+            const data = await response.json();
+            isAdmin = data.isAdmin;
         }
     } catch (e) {
         logout();
@@ -59,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const data = await response.json();
             if(response.status === 200) {
                 isAuthenticated = true;
+                isAdmin = data.isAdmin;
                 showPopover("Успешный вход");
                 closeModal("login-modal");
             } else {
