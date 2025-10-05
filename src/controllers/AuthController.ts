@@ -1,9 +1,9 @@
-import Controller from "./Controller.js";
 import {Express} from "express";
-import {jwtSign} from "../jwt.js";
-import UserModel from "../models/UserModel.js";
 import bcrypt from "bcrypt";
-import AuthMiddleware from "../middlewares/AuthMiddleware.js";
+import Controller from "./Controller.ts";
+import {jwtSign} from "../JWT.ts";
+import UserModel from "../models/UserModel.ts";
+import AuthMiddleware from "../middlewares/AuthMiddleware.ts";
 
 export default class AuthController extends Controller {
     public constructor(app: Express, authMiddleware: AuthMiddleware) {

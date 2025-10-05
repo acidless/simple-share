@@ -1,11 +1,10 @@
 {
   "name": "simple-share",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "build": "tsc",
-    "postinstall": "tsc",
-    "start": "node dist/server.js"
+    "test": "jest",
+    "start": "node --loader ts-node/esm src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +16,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "esm": "^3.2.25",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "lowdb": "^7.0.1",
@@ -35,6 +35,6 @@
     "@types/node": "^24.6.2",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.4",
-    "ts-node-dev": "^2.0.0"
+    "ts-node": "^10.9.2"
   }
 }

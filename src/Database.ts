@@ -1,7 +1,7 @@
-import {BaseSchema} from "./Schema.js";
 import { JSONFileSync } from 'lowdb/node'
 import {LowSync} from "lowdb";
 import fs from "fs";
+import {BaseSchema} from "./Schema.ts";
 
 interface SchemaConstructor<T extends BaseSchema> {
     new (...args: any[]): T;

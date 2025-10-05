@@ -1,10 +1,9 @@
-import Database from "../Database.js";
-import {UserSchema, UserType} from "../Schema.js";
-import Model from "./Model.js";
 import bcrypt from "bcrypt";
+import Database from "../Database.ts";
+import {UserSchema, UserType} from "../Schema.ts";
+import Model from "./Model.ts";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com";
-console.log(ADMIN_EMAIL);
 
 export default class UserModel extends Model<UserSchema> {
     public constructor() {

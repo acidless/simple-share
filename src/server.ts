@@ -5,9 +5,9 @@ import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
-import FileController from "./controllers/FileController.js";
-import AuthController from "./controllers/AuthController.js";
-import AuthMiddleware from "./middlewares/AuthMiddleware.js";
+import FileController from "./controllers/FileController.ts";
+import AuthController from "./controllers/AuthController.ts";
+import AuthMiddleware from "./middlewares/AuthMiddleware.ts";
 
 dotenv.config();
 

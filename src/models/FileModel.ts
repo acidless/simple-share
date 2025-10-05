@@ -1,8 +1,8 @@
-import Database from "../Database.js";
 import {nanoid} from "nanoid";
-import * as fs from "node:fs";
-import Model from "./Model.js";
-import {FileSchema, FileType} from "../Schema.js";
+import * as fs from "fs";
+import Database from "../Database.ts";
+import {FileSchema, FileType} from "../Schema.ts";
+import Model from "./Model.ts";
 
 export type CreateFileParams = {
     originalName: string;
@@ -85,7 +85,7 @@ export default class FileModel extends Model<FileSchema> {
             return now - lastAccess > threshold;
         });
 
-        toDelete.forEach(this.deleteFile);
+        toDelete.forEach(this.deleteFile.bind(this));
         return toDelete.length;
     }
 }

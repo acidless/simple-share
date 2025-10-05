@@ -1,0 +1,1 @@
+export const JSONFileSync = jest.fn();
