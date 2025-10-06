@@ -1,47 +1,44 @@
-import {Express} from "express";
+import express from "express";
 import bcrypt from "bcrypt";
 import Controller from "./Controller.ts";
 import {jwtSign} from "../JWT.ts";
 import UserModel from "../models/UserModel.ts";
-import AuthMiddleware from "../middlewares/AuthMiddleware.ts";
 
-export default class AuthController extends Controller {
-    public constructor(app: Express, authMiddleware: AuthMiddleware) {
-        super(app);
+class AuthController extends Controller {
+    public async login(req: express.Request, res: express.Response) {
+        const {email, password} = req.body;
 
-        app.post('/api/session', async (req, res) => {
-            const { email, password } = req.body;
+        const userModel = new UserModel();
+        let user = userModel.findByEmail(email);
+        if (!user) {
+            user = await userModel.create(email, password);
+        }
 
-            const userModel = new UserModel();
-            let user = userModel.findByEmail(email);
-            if (!user) {
-                user = await userModel.create(email, password);
-            }
+        const valid = await bcrypt.compare(password, user.passwordHash);
+        if (!valid) {
+            return res.status(400).json({success: false, error: "Неверные данные для входа"});
+        }
 
-            const valid = await bcrypt.compare(password, user.passwordHash);
-            if (!valid) {
-                return res.status(400).json({ success: false, error: "Неверные данные для входа" });
-            }
+        const token = jwtSign({userId: user.id});
 
-            const token = jwtSign({userId: user.id});
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict"
+        }).json({success: true, isAdmin: user.isAdmin});
+    }
 
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict"
-            }).json({success: true, isAdmin: user.isAdmin});
-        });
+    public async logout(req: express.Request, res: express.Response) {
+        return res.clearCookie("token").json({success: true});
+    }
 
-        app.delete('/api/session', authMiddleware.middleware, async (req, res) => {
-            return res.clearCookie("token").json({success: true});
-        });
+    public async me(req: express.Request, res: express.Response) {
+        if ((req as any).user) {
+            return res.json({success: true, isAdmin: (req as any).user.isAdmin});
+        }
 
-        app.get('/api/session', authMiddleware.middleware, async (req, res) => {
-            if((req as any).user) {
-                return res.json({success: true, isAdmin: (req as any).user.isAdmin});
-            }
-
-            return res.status(401).json({success: false, error: "Вы должны быть авторизованы для этого"});
-        });
+        return res.status(401).json({success: false, error: "Вы должны быть авторизованы для этого"});
     }
 }
+
+export default new AuthController();

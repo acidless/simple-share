@@ -1,9 +1,10 @@
     import express from "express";
     import {jwtVerify} from "../JWT.ts";
     import UserModel from "../models/UserModel.ts";
+    import Middleware from "./Middleware.ts";
 
-    class AuthMiddleware {
-        public middleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+    class AuthMiddleware extends Middleware {
+        public execute(req: express.Request, res: express.Response, next: express.NextFunction) {
             const token = req.cookies?.token;
             if (!token) {
                 return res.status(401).json({ success: false, error: "Вы должны быть авторизованы для этого" });
@@ -26,4 +27,4 @@
         }
     }
 
-    export default AuthMiddleware;
+    export default new AuthMiddleware();

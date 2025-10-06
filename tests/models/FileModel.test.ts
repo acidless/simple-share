@@ -125,7 +125,7 @@ describe("FileModel", () => {
             downloadCount: 10
         });
 
-        const result = fileModel.top100Files();
+        const result = fileModel.topNFiles(100);
         expect(result[0].id).toBe("b");
     });
 

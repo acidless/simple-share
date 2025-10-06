@@ -3,14 +3,12 @@ jest.mock("../../src/models/UserModel.ts");
 jest.mock("../../src/JWT.ts", () => ({
     jwtVerify: jest.fn()
 }));
-
 import AuthMiddleware from "../../src/middlewares/AuthMiddleware.ts";
 import {jwtVerify} from "../../src/JWT.ts";
 import UserModel from "../../src/models/UserModel.ts";
 
 
 describe("AuthMiddleware", () => {
-    let middleware: AuthMiddleware;
     let req: any;
     let res: any;
     let next: jest.Mock;
@@ -18,8 +16,6 @@ describe("AuthMiddleware", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        middleware = new AuthMiddleware();
 
         req = {cookies: {}};
         res = {
@@ -35,7 +31,7 @@ describe("AuthMiddleware", () => {
     });
 
     test("should return 401 if token is missing", () => {
-        middleware.middleware(req, res, next);
+        AuthMiddleware.execute(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({success: false, error: "Вы должны быть авторизованы для этого"});
@@ -46,7 +42,7 @@ describe("AuthMiddleware", () => {
         req.cookies.token = "token123";
         (jwtVerify as jest.Mock).mockImplementation(() => { throw new Error("invalid"); });
 
-        middleware.middleware(req, res, next);
+        AuthMiddleware.execute(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({success: false, error: "Предоставлен неверный токен"});
@@ -58,7 +54,7 @@ describe("AuthMiddleware", () => {
         (jwtVerify as jest.Mock).mockReturnValue({userId: "u1"});
         mockFindById.mockReturnValue(undefined);
 
-        middleware.middleware(req, res, next);
+        AuthMiddleware.execute(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({success: false, error: "Предоставлен неверный токен"});
@@ -71,7 +67,7 @@ describe("AuthMiddleware", () => {
         (jwtVerify as jest.Mock).mockReturnValue({userId: "u1"});
         mockFindById.mockReturnValue(user);
 
-        middleware.middleware(req, res, next);
+        AuthMiddleware.execute(req, res, next);
 
         expect((req as any).user).toBe(user);
         expect(next).toHaveBeenCalled();

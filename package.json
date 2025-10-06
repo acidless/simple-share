@@ -1,7 +1,7 @@
 {
   "name": "simple-share",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "test": "jest",
     "start": "node --loader ts-node/esm src/server.ts"

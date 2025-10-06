@@ -1,13 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
-import FileController from "./controllers/FileController.ts";
-import AuthController from "./controllers/AuthController.ts";
-import AuthMiddleware from "./middlewares/AuthMiddleware.ts";
+import Routes from "./routes/Routes.ts";
 
 dotenv.config();
 
@@ -22,23 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'public')));
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadsDir),
-    filename: (req, file, cb) => {
-        const safe = Date.now() + '-' + file.originalname.replace(/\s+/g, '_');
-        cb(null, safe);
-    }
-});
-const upload = multer({storage, limits: {fileSize: 100 * 1024 * 1024}});
-
-const authMiddleware = new AuthMiddleware();
-
-
-const authController = new AuthController(app, authMiddleware);
-const fileController = new FileController(app, upload, authMiddleware);
+app.use("/api", Routes);
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);

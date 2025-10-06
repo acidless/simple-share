@@ -157,7 +157,7 @@ function addFileToStats(file) {
 
 async function loadStats() {
     try {
-        const res = await fetch("/api/files");
+        const res = await fetch("/api/files?amount=100");
         const data = await res.json();
 
         const tbody = document.getElementById("stats-body");

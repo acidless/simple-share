@@ -56,9 +56,9 @@ export default class FileModel extends Model<FileSchema> {
         return f;
     }
 
-    public top100Files() {
+    public topNFiles(amount: number) {
         this.db.read();
-        return this.db.data().files.sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 100);
+        return this.db.data().files.sort((a, b) => b.downloadCount - a.downloadCount).slice(0, amount);
     }
 
     public deleteFile(entry: FileType) {
